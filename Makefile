@@ -30,5 +30,9 @@ $(OBJDIR)/%.d: %.cpp
 
 include $(patsubst %.o, $(OBJDIR)/%.d, $(OBJ))
 
+test: dev
+	make -C ./test clean
+	make -C ./test all
+
 clean:
 	rm -rf $(TARGET) $(BUILD_DIR) obj
