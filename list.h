@@ -87,10 +87,33 @@ template <typename T> class list {
         }
     }
 
+    template <typename... Args> T &emplace_back(Args &&...args) {
+        return *emplace(end(), std::forward<Args>(args)...);
+    }
+
+    template <typename... Args> T &emplace_front(Args &&...args) {
+        return *emplace(begin(), std::forward<Args>(args)...);
+    }
+
     iterator begin() { return iterator(head); }
     iterator end() { return iterator(nullptr); }
 
+    T &operator[](size_t index) {
+        node *ret = head;
+        for (size_t i = 0; i < index; ++i) {
+            ret = head->next;
+        }
+        return ret->element;
+    }
+
     list() : head(nullptr), tail(nullptr) {}
+    list(std::initializer_list<T> init) {
+        head = tail = nullptr;
+        for (const auto &v : init) {
+            emplace_back(v);
+        }
+    }
+    // TODO: Copy constructor
 
     ~list() {
         for (node *it = head, *tmp; it != tail; it = tmp) {
