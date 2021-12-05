@@ -129,6 +129,33 @@ void test_capacity(mystl::list<std::pair<int, int>> &l,
     }
 }
 
+void test_merge() {
+    mystl::list<int> la({1, 3, 5, 40, 50}), lb({2, 3, 4, 45, 70});
+    std::list<int> ta({1, 3, 5, 40, 50}), tb({2, 3, 4, 45, 70});
+    ta.merge(tb);
+    la.merge(lb);
+    if (!std::equal(la.begin(), la.end(), ta.begin(), ta.end())) {
+        throw test_exception("merge");
+    }
+
+    mystl::list<int> lc = la;
+    std::list<int> tc = ta;
+    lc.merge(mystl::list<int>({3, 5, 7, 9, 70}));
+    tc.merge(std::list<int>({3, 5, 7, 9, 70}));
+    if (!std::equal(lc.begin(), lc.end(), tc.begin(), tc.end())) {
+        throw test_exception("merge");
+    }
+}
+
+void test_sort(mystl::list<std::pair<int, int>> &l,
+               std::list<std::pair<int, int>> &t) {
+    l.sort();
+    t.sort();
+    if (!std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("sort");
+    }
+}
+
 int main() {
     mystl::list<std::pair<int, int>> sample({{1, 11}, {2, 12}, {3, 13}});
     std::list<std::pair<int, int>> testcase({{1, 11}, {2, 12}, {3, 13}});
@@ -168,5 +195,13 @@ int main() {
     std::cout << "[Start] Begin reverse iterator test\n";
     test_reverse_iter(sample, testcase);
     std::cout << "[Success] Pass reverse iterator test\n";
+
+    std::cout << "[Start] Begin merge test\n";
+    test_merge();
+    std::cout << "[Success] Pass merge test\n";
+
+    std::cout << "[Start] Begin sort test\n";
+    test_sort(sample, testcase);
+    std::cout << "[Success] Pass sort test\n";
     return 0;
 }
