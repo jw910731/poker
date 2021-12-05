@@ -67,6 +67,13 @@ void test_rule_of_five(mystl::list<std::pair<int, int>> &l,
     }
 }
 
+void test_reverse_iter(mystl::list<std::pair<int, int>> &l,
+                       std::list<std::pair<int, int>> &t) {
+    if (!std::equal(l.rbegin(), l.rend(), t.rbegin(), t.rend())) {
+        throw test_exception("reverse iterator");
+    }
+}
+
 int main() {
     mystl::list<std::pair<int, int>> sample({{1, 11}, {2, 12}, {3, 13}});
     std::list<std::pair<int, int>> testcase({{1, 11}, {2, 12}, {3, 13}});
@@ -91,5 +98,8 @@ int main() {
     test_iterator(sample, testcase);
     std::cout << "[Success] Pass iterator behaviour test\n";
 
+    std::cout << "[Start] Begin reverse iterator test\n";
+    test_reverse_iter(sample, testcase);
+    std::cout << "[Success] Pass reverse iterator test\n";
     return 0;
 }
