@@ -89,6 +89,27 @@ void test_erase(mystl::list<std::pair<int, int>> l,
     }
 }
 
+void test_pop_back_front(mystl::list<std::pair<int, int>> l,
+                         std::list<std::pair<int, int>> t) {
+    l.pop_back();
+    t.pop_back();
+    if (!std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("pop back and pop front");
+    }
+
+    l.pop_back();
+    t.pop_back();
+    if (!std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("pop back and pop front");
+    }
+
+    l.pop_front();
+    t.pop_front();
+    if (!std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("pop back and pop front");
+    }
+}
+
 int main() {
     mystl::list<std::pair<int, int>> sample({{1, 11}, {2, 12}, {3, 13}});
     std::list<std::pair<int, int>> testcase({{1, 11}, {2, 12}, {3, 13}});
@@ -101,13 +122,17 @@ int main() {
     test_emplace(sample, testcase);
     std::cout << "[Success] Pass emplace test\n";
 
+    std::cout << "[Start] Begin emplace back test\n";
+    test_emplace_back(sample, testcase);
+    std::cout << "[Success] Pass emplace back test\n";
+
     std::cout << "[Start] Begin erase test\n";
     test_erase(sample, testcase);
     std::cout << "[Success] Pass erase test\n";
 
-    std::cout << "[Start] Begin emplace back test\n";
-    test_emplace_back(sample, testcase);
-    std::cout << "[Success] Pass emplace back test\n";
+    std::cout << "[Start] Begin pop back and pop front test\n";
+    test_pop_back_front(sample, testcase);
+    std::cout << "[Success] Pass pop back and pop front test\n";
 
     std::cout << "[Start] Begin copy & move assignment and ctor test\n";
     test_rule_of_five(sample, testcase);
