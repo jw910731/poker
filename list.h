@@ -28,7 +28,7 @@ template <typename T> class list {
   public:
     class iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
       private:
-        iterator() = default;
+        iterator() : ptr(nullptr) {}
         iterator(node *p) : ptr(p) {}
         node *ptr;
         friend class list;
@@ -91,6 +91,24 @@ template <typename T> class list {
 
     template <typename... Args> T &emplace_front(Args &&...args) {
         return *emplace(begin(), std::forward<Args>(args)...);
+    }
+
+    iterator erase(const iterator it) {
+        it.ptr->prev->next = it.ptr->next;
+        it.ptr->next->prev = it.ptr->prev;
+        node *tmp = it.ptr->next;
+        delete it.ptr;
+        return iterator(tmp);
+    }
+    iterator erase(const iterator first, const iterator last) {
+        first.ptr->prev->next = last.ptr;
+        iterator it, tmp;
+        for (it = first; it != last; it = tmp) {
+            tmp = std::next(it);
+            delete it.ptr;
+        }
+        tmp.ptr->prev = first.ptr;
+        return tmp;
     }
 
     iterator begin() noexcept { return iterator(head->next); }
