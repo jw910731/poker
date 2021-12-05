@@ -4,18 +4,18 @@ CXXFLAGS += -Wall -Wextra -std=c++17
 LDFLAGS = 
 
 TARGET = poker.out
-OBJ= main.o
+OBJ= main.o poker.o
 
 .PHONY: all
 
-all: CFLAGS:=$(CFLAGS) -O3
+all: CXXFLAGS += -O3
 all: $(TARGET) 
 
-debug: CFLAGS:=$(CFLAGS) -g -DDEBUG -fsanitize=leak -fsanitize=undefined
-debug: LDFLAGS:=$(LDFLAGS) -fsanitize=address -lubsan -lasan 
+debug: CXXFLAGS += -g -DDEBUG -fsanitize=leak -fsanitize=undefined
+debug: LDFLAGS += -fsanitize=address -lubsan -lasan 
 debug: $(TARGET)
 
-dev: CFLAGS:=$(CFLAGS) -g -DDEBUG
+dev: CXXFLAGS += -g -DDEBUG
 dev: $(TARGET)
 
 .SECONDEXPANSION:
