@@ -93,8 +93,30 @@ template <typename T> class list {
         return *emplace(begin(), std::forward<Args>(args)...);
     }
 
-    iterator begin() const { return iterator(head->next); }
-    iterator end() const { return iterator(tail); }
+    iterator begin() noexcept { return iterator(head->next); }
+    const iterator begin() const noexcept { return iterator(head->next); }
+    iterator end() noexcept { return iterator(tail); }
+    const iterator end() const noexcept { return iterator(tail); }
+    std::reverse_iterator<iterator> rbegin() noexcept {
+        return std::reverse_iterator(end());
+    }
+    const std::reverse_iterator<iterator> rbegin() const noexcept {
+        return std::reverse_iterator(end());
+    }
+    std::reverse_iterator<iterator> rend() noexcept {
+        return std::reverse_iterator(begin());
+    }
+    const std::reverse_iterator<iterator> rend() const noexcept {
+        return std::reverse_iterator(begin());
+    }
+    const iterator cbegin() const noexcept { return iterator(head->next); }
+    const iterator cend() const noexcept { return iterator(tail); }
+    const std::reverse_iterator<iterator> crbegin() const noexcept {
+        return std::reverse_iterator(rbegin());
+    }
+    const std::reverse_iterator<const iterator> crend() const noexcept {
+        return std::reverse_iterator(rend());
+    }
 
     constexpr bool operator==(const list &rhs) const {
         return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end());
