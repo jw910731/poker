@@ -74,6 +74,21 @@ void test_reverse_iter(mystl::list<std::pair<int, int>> &l,
     }
 }
 
+void test_erase(mystl::list<std::pair<int, int>> l,
+                std::list<std::pair<int, int>> t) {
+    auto lit = l.erase(std::next(l.begin(), 2));
+    auto tit = t.erase(std::next(t.begin(), 2));
+    if (*lit != *tit || !std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("erase");
+    }
+
+    lit = l.erase(lit, std::prev(l.end(), 1));
+    tit = t.erase(tit, std::prev(t.end(), 1));
+    if (*lit != *tit || !std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("erase");
+    }
+}
+
 int main() {
     mystl::list<std::pair<int, int>> sample({{1, 11}, {2, 12}, {3, 13}});
     std::list<std::pair<int, int>> testcase({{1, 11}, {2, 12}, {3, 13}});
@@ -85,6 +100,10 @@ int main() {
     std::cout << "[Start] Begin emplace test\n";
     test_emplace(sample, testcase);
     std::cout << "[Success] Pass emplace test\n";
+
+    std::cout << "[Start] Begin erase test\n";
+    test_erase(sample, testcase);
+    std::cout << "[Success] Pass erase test\n";
 
     std::cout << "[Start] Begin emplace back test\n";
     test_emplace_back(sample, testcase);
