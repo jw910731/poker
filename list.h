@@ -110,6 +110,8 @@ template <typename T> class list {
         tmp.ptr->prev = first.ptr;
         return tmp;
     }
+    void pop_front() { erase(begin()); }
+    void pop_back() { erase(std::prev(end())); }
 
     iterator begin() noexcept { return iterator(head->next); }
     const iterator begin() const noexcept { return iterator(head->next); }
