@@ -33,6 +33,9 @@
 *.app
 *.test
 
+# Valgrind
+vgcore.*
+
 ## VS Code
 .vscode/*
 *.code-workspace
