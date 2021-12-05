@@ -110,6 +110,25 @@ void test_pop_back_front(mystl::list<std::pair<int, int>> l,
     }
 }
 
+void test_capacity(mystl::list<std::pair<int, int>> &l,
+                   std::list<std::pair<int, int>> &t) {
+    if (l.size() != t.size()) {
+        throw test_exception("capacity");
+    }
+
+    mystl::list<int> l2;
+    std::list<int> t2;
+    if (l2.empty() != t2.empty()) {
+        throw test_exception("capacity");
+    }
+
+    l2.emplace_back(1);
+    t2.emplace_back(2);
+    if (l2.empty() != t2.empty()) {
+        throw test_exception("capacity");
+    }
+}
+
 int main() {
     mystl::list<std::pair<int, int>> sample({{1, 11}, {2, 12}, {3, 13}});
     std::list<std::pair<int, int>> testcase({{1, 11}, {2, 12}, {3, 13}});
@@ -133,6 +152,10 @@ int main() {
     std::cout << "[Start] Begin pop back and pop front test\n";
     test_pop_back_front(sample, testcase);
     std::cout << "[Success] Pass pop back and pop front test\n";
+
+    std::cout << "[Start] Begin capacity test\n";
+    test_capacity(sample, testcase);
+    std::cout << "[Success] Pass capacity test\n";
 
     std::cout << "[Start] Begin copy & move assignment and ctor test\n";
     test_rule_of_five(sample, testcase);
