@@ -7,14 +7,14 @@ OBJDIR = ../obj
 SRC_DIR = ..
 
 TEST_UNITS = list
-list_OBJ = 
+list_OBJ = test_util.o
 
 all: test
 
 test: $(TEST_UNITS)
 
 .SECONDEXPANSION:
-$(TEST_UNITS):  $$@.o $$(patsubst %, $(OBJDIR)/%, $$($$@_OBJ)) 
+$(TEST_UNITS):  $$@.o $$($$@_OBJ) 
 	$(CXX) $^ -o $@.test $(LDFLAGS)
 	@echo "[$@] Test start"
 	@./$@.test
