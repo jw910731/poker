@@ -5,6 +5,12 @@
 #include <utility>
 
 namespace mystl {
+/**
+ * @brief A self implemented linked list
+ * Uses pseudo node design on two ends.
+ *
+ * @tparam T element type
+ */
 template <typename T> class list {
   private:
     class node {
@@ -65,30 +71,18 @@ template <typename T> class list {
      */
     template <typename... Args>
     iterator emplace(const iterator &it, Args &&...args) {
-        if (it != iterator(nullptr)) {
-            node *tmp = it.ptr->prev;
-            it.ptr->prev = new node(std::forward<Args>(args)...);
-            if (tmp) { // if append node in middle
-                tmp->next =
-                    it.ptr->prev;    // update previous node's next node pointer
-            } else {                 // if append element before head
-                head = it.ptr->prev; // update head
-            }
-            auto ret = iterator(it.ptr->prev);
-            ret.ptr->next = it.ptr;
-            ret.ptr->prev = tmp;
-            return ret;
-        } else {
-            // position is null = emplace back
-            node *tmp = tail;
-            tail = new node(std::forward<Args>(args)...);
-            if (head == nullptr)
-                head = tail;
-            if (tmp != nullptr)
-                tmp->next = tail;
-            tail->prev = tmp;
-            return iterator(tail);
+        node *tmp = it.ptr->prev;
+        it.ptr->prev = new node(std::forward<Args>(args)...);
+        if (tmp) { // if append node in middle
+            tmp->next =
+                it.ptr->prev;    // update previous node's next node pointer
+        } else {                 // if append element before head
+            head = it.ptr->prev; // update head
         }
+        auto ret = iterator(it.ptr->prev);
+        ret.ptr->next = it.ptr;
+        ret.ptr->prev = tmp;
+        return ret;
     }
 
     template <typename... Args> T &emplace_back(Args &&...args) {
@@ -99,8 +93,8 @@ template <typename T> class list {
         return *emplace(begin(), std::forward<Args>(args)...);
     }
 
-    iterator begin() const { return iterator(head); }
-    iterator end() const { return iterator(nullptr); }
+    iterator begin() const { return iterator(head->next); }
+    iterator end() const { return iterator(tail); }
 
     constexpr bool operator==(const list &rhs) const {
         return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end());
@@ -124,7 +118,10 @@ template <typename T> class list {
             delete it;
         }
         delete tail;
-        head = tail = nullptr;
+        head = new node();
+        tail = new node();
+        head->next = tail;
+        tail->prev = head;
         // copy
         if (this != &rhs) {
             for (const auto &v : rhs) {
@@ -142,7 +139,10 @@ template <typename T> class list {
             delete it;
         }
         delete tail;
-        head = tail = nullptr;
+        head = new node();
+        tail = new node();
+        head->next = tail;
+        tail->prev = head;
         // move
         if (this != &rhs) {
             head = rhs.head;
@@ -152,15 +152,22 @@ template <typename T> class list {
         return *this;
     }
 
-    list() : head(nullptr), tail(nullptr) {}
-    list(std::initializer_list<T> init) : head(nullptr), tail(nullptr) {
+    list() : head(new node()), tail(new node()) {
+        head->next = tail;
+        tail->prev = head;
+    }
+    list(std::initializer_list<T> init) : head(new node()), tail(new node()) {
+        head->next = tail;
+        tail->prev = head;
         for (const auto &v : init) {
             emplace_back(v);
         }
     }
 
     // copy constructor
-    list(const list &l) : head(nullptr), tail(nullptr) {
+    list(const list &l) : head(new node()), tail(new node()) {
+        head->next = tail;
+        tail->prev = head;
         for (const auto &v : l) {
             emplace_back(v);
         }
