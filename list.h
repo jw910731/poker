@@ -46,8 +46,12 @@ template <typename T> class list {
             operator--();
             return itr;
         }
-        bool operator==(const iterator &rhs) const { return ptr == rhs.ptr; }
-        bool operator!=(const iterator &rhs) const { return ptr != rhs.ptr; }
+        constexpr bool operator==(const iterator &rhs) const {
+            return ptr == rhs.ptr;
+        }
+        constexpr bool operator!=(const iterator &rhs) const {
+            return ptr != rhs.ptr;
+        }
         T &operator*() { return ptr->element; }
     };
 
@@ -95,8 +99,14 @@ template <typename T> class list {
         return *emplace(begin(), std::forward<Args>(args)...);
     }
 
-    iterator begin() { return iterator(head); }
-    iterator end() { return iterator(nullptr); }
+    iterator begin() const { return iterator(head); }
+    iterator end() const { return iterator(nullptr); }
+
+    constexpr bool operator==(const list &rhs) const {
+        return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end());
+    }
+
+    constexpr bool operator!=(const list &rhs) const { return !(*this == rhs); }
 
     T &operator[](size_t index) {
         node *ret = head;
@@ -106,14 +116,58 @@ template <typename T> class list {
         return ret->element;
     }
 
-    list() : head(nullptr), tail(nullptr) {}
-    list(std::initializer_list<T> init) {
+    // copy assignment
+    list &operator=(const list &rhs) {
+        // free original list
+        for (node *it = head, *tmp; it != tail; it = tmp) {
+            tmp = it->next;
+            delete it;
+        }
+        delete tail;
         head = tail = nullptr;
+        // copy
+        if (this != &rhs) {
+            for (const auto &v : rhs) {
+                emplace_back(v);
+            }
+        }
+        return *this;
+    }
+
+    // move assignment
+    list &operator=(list &&rhs) {
+        // free original list
+        for (node *it = head, *tmp; it != tail; it = tmp) {
+            tmp = it->next;
+            delete it;
+        }
+        delete tail;
+        head = tail = nullptr;
+        // move
+        if (this != &rhs) {
+            head = rhs.head;
+            tail = rhs.tail;
+            rhs.head = rhs.tail = nullptr;
+        }
+        return *this;
+    }
+
+    list() : head(nullptr), tail(nullptr) {}
+    list(std::initializer_list<T> init) : head(nullptr), tail(nullptr) {
         for (const auto &v : init) {
             emplace_back(v);
         }
     }
-    // TODO: Copy constructor
+
+    // copy constructor
+    list(const list &l) : head(nullptr), tail(nullptr) {
+        for (const auto &v : l) {
+            emplace_back(v);
+        }
+    }
+
+    // move constructor
+    list(list &&l) : head(l.head), tail(l.tail) { l.head = l.tail = nullptr; }
 
     ~list() {
         for (node *it = head, *tmp; it != tail; it = tmp) {
