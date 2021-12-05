@@ -62,6 +62,20 @@ template <typename T> class list {
         T &operator*() { return ptr->element; }
     };
 
+  private:
+    iterator emplace_node(const iterator &it, iterator n) {
+        node *tmp = it.ptr->prev;
+        it.ptr->prev = n.ptr;
+        tmp->next = it.ptr->prev; // update previous node's next node pointer
+        //(because theprotection of pseudo node, tmp will never be null)
+        auto ret = iterator(it.ptr->prev);
+        ret.ptr->next = it.ptr;
+        ret.ptr->prev = tmp;
+        ++m_size; // increment container size
+        return ret;
+    }
+
+  public:
     /**
      * @brief Append element before designated position
      *
@@ -74,12 +88,8 @@ template <typename T> class list {
     iterator emplace(const iterator &it, Args &&...args) {
         node *tmp = it.ptr->prev;
         it.ptr->prev = new node(std::forward<Args>(args)...);
-        if (tmp) { // if append node in middle
-            tmp->next =
-                it.ptr->prev;      // update previous node's next node pointer
-        } else {                   // if append element before head
-            m_head = it.ptr->prev; // update head
-        }
+        tmp->next = it.ptr->prev; // update previous node's next node pointer
+        //(because theprotection of pseudo node, tmp will never be null)
         auto ret = iterator(it.ptr->prev);
         ret.ptr->next = it.ptr;
         ret.ptr->prev = tmp;
@@ -152,6 +162,36 @@ template <typename T> class list {
 
     size_t size() const noexcept { return m_size; }
     bool empty() const noexcept { return m_size == 0; }
+
+    template <typename Comp> void merge(list &&other, Comp comp) {
+        merge(other, comp);
+    }
+    void merge(list &&other) { merge(std::forward<list>(other), std::less()); }
+
+    template <typename Comp> void merge(list &other, Comp comp) {
+        auto it = begin(), oit = other.begin();
+        for (; it != end() && oit != other.end();) {
+            if (!comp(*it, *oit)) {
+                auto next = std::next(oit);
+                it = emplace_node(it, oit); // size increase is hidden inside
+                oit = next;
+            } else {
+                ++it;
+            }
+        }
+        for (; it != end(); ++it)
+            ;
+        for (; oit != other.end();) {
+            auto next = std::next(oit);
+            it = emplace_node(it,
+                              oit); // size increase is hidden inside
+            oit = next;
+        }
+        other.m_size = 0;
+        other.m_head->next = other.m_tail;
+        other.m_tail->prev = other.m_head;
+    }
+    void merge(list &other) { merge(other, std::less()); }
 
     // copy assignment
     list &operator=(const list &rhs) {
