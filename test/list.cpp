@@ -147,6 +147,15 @@ void test_merge() {
     }
 }
 
+void test_sort(mystl::list<std::pair<int, int>> &l,
+               std::list<std::pair<int, int>> &t) {
+    l.sort();
+    t.sort();
+    if (!std::equal(l.begin(), l.end(), t.begin(), t.end())) {
+        throw test_exception("sort");
+    }
+}
+
 int main() {
     mystl::list<std::pair<int, int>> sample({{1, 11}, {2, 12}, {3, 13}});
     std::list<std::pair<int, int>> testcase({{1, 11}, {2, 12}, {3, 13}});
@@ -190,5 +199,9 @@ int main() {
     std::cout << "[Start] Begin merge test\n";
     test_merge();
     std::cout << "[Success] Pass merge test\n";
+
+    std::cout << "[Start] Begin sort test\n";
+    test_sort(sample, testcase);
+    std::cout << "[Success] Pass sort test\n";
     return 0;
 }
