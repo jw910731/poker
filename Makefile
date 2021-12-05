@@ -36,3 +36,4 @@ test: dev
 
 clean:
 	rm -rf $(TARGET) $(BUILD_DIR) obj
+	make -C ./test clean

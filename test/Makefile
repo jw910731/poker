@@ -35,4 +35,4 @@ include $(patsubst %.o, $(OBJDIR)/%.d, $(OBJ))
 include $(patsubst %, %.d, $(TEST_UNITS))
 
 clean:
-	rm -rf $(TEST_UNITS) *.d *.o
+	rm -rf $(patsubst %, %.test,$(TEST_UNITS)) *.d *.o
