@@ -4,7 +4,7 @@
 
 test_exception::test_exception(const std::string &s) {
     std::stringstream ss;
-    ss << "[Fail] Fail in " << s << "test\n";
+    ss << "[Fail] Fail in " << s << " test\n";
     m_msg = ss.str();
 }
 
