@@ -1,22 +1,25 @@
 #include "list.h"
 
-#include <random>
+#include <list>
+#include <ostream>
 
 enum suit { C, D, H, S };
 
 class card {
-    enum suit m_suit;
-    int m_number;
-
   public:
-    card(enum suit suit, int number);
+    int m_number;
+    card(int number);
+    card() = default;
+    bool operator<(const card &c) const;
 };
 
+std::ostream &operator<<(std::ostream &os, const card &c);
+
 class player {
+    mystl::list<int> &m_deck;
+
+  public:
     mystl::list<card> m_cards[4];
-    std::random_device m_rd;
-    std::mt19937 m_gen;
-    std::uniform_int_distribution<> m_number_gen, m_suit_gen;
-    player();
+    player(mystl::list<int> &l);
     void add_card(int n);
 };
