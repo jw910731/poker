@@ -3,13 +3,15 @@
 #include <cstdlib>
 
 player::player(mystl::list<int> &l) : m_deck(l) {}
-void player::add_card(int n) {
+int player::add_card(int n) {
+    int val;
     for (int i = 0; i < n; ++i) {
         auto it = std::next(m_deck.begin(), rand() % m_deck.size());
-        int val = *it;
+        val = *it;
         m_deck.erase(it);
         m_cards[val % 4].emplace_back(val / 4);
     }
+    return val;
 }
 
 card::card(int number) : m_number(number) {}

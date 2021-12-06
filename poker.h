@@ -21,5 +21,5 @@ class player {
   public:
     mystl::list<card> m_cards[4];
     player(mystl::list<int> &l);
-    void add_card(int n);
+    int add_card(int n = 1);
 };
