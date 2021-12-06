@@ -6,8 +6,9 @@ CXXFLAGS += -Wall -Wextra -std=c++17 -g
 OBJDIR = ../obj
 SRC_DIR = ..
 
-TEST_UNITS = list
+TEST_UNITS = list poker
 list_OBJ = test_util.o
+poker_OBJ= test_util.o $(OBJDIR)/poker.o
 
 all: test
 
