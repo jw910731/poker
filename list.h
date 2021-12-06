@@ -183,7 +183,7 @@ template <typename T> class list {
         }
         for (; oit != other.end();) {
             auto next = std::next(oit);
-            it = emplace_node(it, oit);
+            emplace_node(end(), oit);
             ++m_size; // increment container size
             oit = next;
         }
@@ -197,7 +197,7 @@ template <typename T> class list {
     list split(iterator &&it) {
         node *tmp = it.ptr->prev->next = new node();
         it.ptr->prev->next->prev = it.ptr->prev;
-        list ret;
+        list ret;                  // declare list to return
         ret.m_tail = m_tail;       // set tail
         ret.m_head->next = it.ptr; // setup dummy head
         it.ptr->prev = ret.m_head;
@@ -217,18 +217,20 @@ template <typename T> class list {
             return;
         if (size() == 2) {
             auto start_it = begin(), end_it = std::prev(end());
-            node *pprev = start_it.ptr->prev, *nnext = end_it.ptr->next;
-            pprev->next = end_it.ptr;
-            nnext->prev = start_it.ptr;
-            start_it.ptr->next = nnext;
-            end_it.ptr->prev = pprev;
-            start_it.ptr->prev = end_it.ptr;
-            end_it.ptr->next = start_it.ptr;
+            if (!comp(*start_it, *end_it)) { // swap on reverse order
+                node *pprev = start_it.ptr->prev, *nnext = end_it.ptr->next;
+                pprev->next = end_it.ptr;
+                nnext->prev = start_it.ptr;
+                start_it.ptr->next = nnext;
+                end_it.ptr->prev = pprev;
+                start_it.ptr->prev = end_it.ptr;
+                end_it.ptr->next = start_it.ptr;
+            }
             return;
         }
         list r = split(std::next(begin(), size() / 2));
-        sort();
-        r.sort();
+        sort(comp);
+        r.sort(comp);
         merge(r, comp);
     }
     void sort() { sort(std::less()); }
