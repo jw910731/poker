@@ -170,6 +170,14 @@ void test_sort(mystl::list<std::pair<int, int>> &l,
     if (!std::equal(l2.begin(), l2.end(), t2.begin(), t2.end())) {
         throw test_exception("sort");
     }
+
+    mystl::list<int> l3 = {5, 10, 13, 1, 4, 3, 8};
+    std::list<int> t3 = {5, 10, 13, 1, 4, 3, 8};
+    l3.sort();
+    t3.sort();
+    if (!std::equal(l3.begin(), l3.end(), t3.begin(), t3.end())) {
+        throw test_exception("sort");
+    }
 }
 
 int main() {
