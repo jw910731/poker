@@ -145,6 +145,14 @@ void test_merge() {
     if (!std::equal(lc.begin(), lc.end(), tc.begin(), tc.end())) {
         throw test_exception("merge");
     }
+
+    mystl::list<std::pair<int, int>> ld({{10, 20}});
+    std::list<std::pair<int, int>> td({{10, 20}});
+    ld.merge(mystl::list<std::pair<int, int>>{{11, 21}, {13, 23}});
+    td.merge(std::list<std::pair<int, int>>{{11, 21}, {13, 23}});
+    if (!std::equal(ld.begin(), ld.end(), td.begin(), td.end())) {
+        throw test_exception("merge");
+    }
 }
 
 void test_sort(mystl::list<std::pair<int, int>> &l,
