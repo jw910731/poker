@@ -165,7 +165,9 @@ template <typename T> class list {
     template <typename Comp> void merge(list &&other, Comp comp) {
         merge(other, comp);
     }
-    void merge(list &&other) { merge(std::forward<list>(other), std::less()); }
+    void merge(list &&other) {
+        merge(std::forward<list>(other), std::less<T>());
+    }
 
     template <typename Comp> void merge(list &other, Comp comp) {
         if (&other == this)
@@ -191,7 +193,7 @@ template <typename T> class list {
         other.m_head->next = other.m_tail;
         other.m_tail->prev = other.m_head;
     }
-    void merge(list &other) { merge(other, std::less()); }
+    void merge(list &other) { merge(other, std::less<T>()); }
 
   private:
     list split(iterator &&it) {
@@ -233,7 +235,7 @@ template <typename T> class list {
         r.sort(comp);
         merge(r, comp);
     }
-    void sort() { sort(std::less()); }
+    void sort() { sort(std::less<T>()); }
 
     // copy assignment
     list &operator=(const list &rhs) {
