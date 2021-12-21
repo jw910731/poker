@@ -36,6 +36,12 @@
 # Valgrind
 vgcore.*
 
+# gcov
+*.gcov
+*.gcda
+*.gcno
+coverage.xml
+
 ## VS Code
 .vscode/*
 *.code-workspace

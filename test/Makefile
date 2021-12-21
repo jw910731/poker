@@ -1,7 +1,8 @@
 .PHONY: all
 
 CXX = g++
-CXXFLAGS += -Wall -Wextra -std=c++17 -g
+CXXFLAGS += -Wall -Wextra -std=c++17 -g --coverage
+LDFLAGS += --coverage
 
 OBJDIR = ../obj
 SRC_DIR = ..
@@ -36,4 +37,4 @@ include $(patsubst %.o, $(OBJDIR)/%.d, $(OBJ))
 include $(patsubst %, %.d, $(TEST_UNITS))
 
 clean:
-	rm -rf $(patsubst %, %.test,$(TEST_UNITS)) *.d *.o
+	rm -rf $(patsubst %, %.test,$(TEST_UNITS)) *.d *.o *.gcov *.gcda *.gcno
